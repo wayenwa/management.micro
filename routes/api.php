@@ -29,3 +29,5 @@ Route::group([
         Route::get('user', 'AuthController@user');
     });
 });
+
+Route::post('request_token', 'AuthController@request_token');

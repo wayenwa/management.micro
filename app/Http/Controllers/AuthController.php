@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\User;
+use App\UserSession;
+use Illuminate\Support\Str;
+
 class AuthController extends Controller
 {
     /**
@@ -63,12 +66,19 @@ class AuthController extends Controller
         if ($request->remember_me)
             $token->expires_at = Carbon::now()->addWeeks(1);
         $token->save();
-        return response()->json([
+        $loginToken = Str::random(15);
+
+        UserSession::create([
+            'user_id' => $user->id,
+            'login_token' => $loginToken,
+            'expiration' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
             'access_token' => $tokenResult->accessToken,
-            'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString()
+        ]);
+
+        return response()->json([
+            'login_token' => $loginToken.'-'.$user->id,
+            'access_token' => $tokenResult->accessToken,
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
         ]);
     }
   
@@ -93,5 +103,17 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function request_token(Request $request)
+    {
+        $data = $request->json()->all(); 
+
+        $session = UserSession::where('user_id', $data['user_id'])->where('login_token', $data['login_token'])->first();
+
+        return response()->json([
+            'data' => $session->access_token
+        ]);
+
     }
 }
