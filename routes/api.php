@@ -28,6 +28,10 @@ Route::group([
         Route::get('logout', 'AuthController@logout');
         Route::get('user', 'AuthController@user');
     });
+
+    /*Municipality*/
+    Route::resource('locations', 'API\LocationsController');
+
 });
 
 Route::post('request_token', 'AuthController@request_token');

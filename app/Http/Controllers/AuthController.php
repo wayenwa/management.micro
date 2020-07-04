@@ -78,6 +78,7 @@ class AuthController extends Controller
         return response()->json([
             'login_token' => $loginToken.'-'.$user->id,
             'access_token' => $tokenResult->accessToken,
+            'name' => $user->name,
             'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
         ]);
     }
@@ -110,9 +111,13 @@ class AuthController extends Controller
         $data = $request->json()->all(); 
 
         $session = UserSession::where('user_id', $data['user_id'])->where('login_token', $data['login_token'])->first();
-
+        $user = User::find($data['user_id']);
+        
         return response()->json([
-            'data' => $session->access_token
+            'data' => [
+                'access_token' => $session->access_token,
+                'name' => $user->name
+            ]
         ]);
 
     }
