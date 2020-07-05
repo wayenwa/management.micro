@@ -38,26 +38,26 @@ class LocationsController extends BaseController
         
         $input = array(
                 'location' => $request->json('municipality'),
-                'status' => STATUS_ENABLED,
+                'status' => 1,
         );
-
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'category_timing_id' => 'required',
-            'status'=> 'required',
-            'merchant_id' => 'required',
-        ]);
-
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
+        return $this->sendResponse($input, 'Category created successfully.');
+        // $validator = Validator::make($input, [
+        //     'name' => 'required',
+        //     'category_timing_id' => 'required',
+        //     'status'=> 'required',
+        //     'merchant_id' => 'required',
+        // ]);
 
 
-        $category = Category::create($input);
+        // if($validator->fails()){
+        //     return $this->sendError('Validation Error.', $validator->errors());       
+        // }
 
 
-        return $this->sendResponse($category->toArray(), 'Category created successfully.');
+        // $category = Category::create($input);
+
+
+        // return $this->sendResponse($category->toArray(), 'Category created successfully.');
     }
 
 
