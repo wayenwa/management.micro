@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'user_type','phone','status'
+        'name', 'email', 'password', 'user_type','phone','status','permission'
     ];
 
     /**
@@ -28,4 +28,9 @@ class User extends Authenticatable
     protected $hidden = [
         'name','password', 'remember_token','user_type'
     ];
+
+    public function scopeAdmin($query)
+    {
+        return $query->where('user_type', 1);
+    }
 }

@@ -21,5 +21,9 @@ class Location extends Model
         'updated_by'
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
     
 }

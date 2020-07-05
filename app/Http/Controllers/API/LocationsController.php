@@ -35,29 +35,32 @@ class LocationsController extends BaseController
      */
     public function store(Request $request)
     {        
-        
+        $data = $request->json()->all();
+
+        $validator = Validator::make($data, [
+            'location' => 'required',
+            'permission' => 'required',
+            'login_token' => 'required',
+        ]);
+
+        $user = $this->getUserByLoginToken($data['login_token']);
+
+        if(!$this->checkPermission($data['permission'])){
+            return response()->json(['message' => 'Permission not valid.'], 422);
+        }
+
         $input = array(
-                'location' => $request->json('municipality'),
-                'status' => 1,
+            'location'      =>  $request->json('municipality'),
+            'status'        =>  STATUS_ENABLED,
+            'created_by'    =>  $user->id,
         );
-        return $this->sendResponse($input, 'Category created successfully.');
-        // $validator = Validator::make($input, [
-        //     'name' => 'required',
-        //     'category_timing_id' => 'required',
-        //     'status'=> 'required',
-        //     'merchant_id' => 'required',
-        // ]);
 
+        if(!Location::create($input))
+            return response()->json(['message' => 'Permission not valid.'], 422);
+        else
+            $locations = Location::active()->get();
 
-        // if($validator->fails()){
-        //     return $this->sendError('Validation Error.', $validator->errors());       
-        // }
-
-
-        // $category = Category::create($input);
-
-
-        // return $this->sendResponse($category->toArray(), 'Category created successfully.');
+            return $this->sendResponse($input, 'Location created successfully.');
     }
 
 

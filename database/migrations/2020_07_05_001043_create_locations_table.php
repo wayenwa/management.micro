@@ -18,7 +18,7 @@ class CreateLocationsTable extends Migration
             $table->string('location')->index();
             $table->integer('status')->index();
             $table->integer('created_by');
-            $table->integer('updated_by');
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }
