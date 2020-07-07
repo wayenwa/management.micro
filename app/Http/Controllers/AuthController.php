@@ -106,19 +106,4 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
-    public function request_token(Request $request)
-    {
-        $data = $request->json()->all(); 
-
-        $session = UserSession::where('user_id', $data['user_id'])->where('login_token', $data['login_token'])->first();
-        $user = User::find($data['user_id']);
-        
-        return response()->json([
-            'data' => [
-                'access_token' => $session->access_token,
-                'name' => $user->name
-            ]
-        ]);
-
-    }
 }

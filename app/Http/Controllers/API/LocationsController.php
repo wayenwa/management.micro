@@ -10,10 +10,12 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Support\Facades\DB;
 use App\Location;
 use App\Http\Traits\AuthsTrait;
+use App\Http\Traits\LocationsTrait;
 
 class LocationsController extends BaseController
 {
     use AuthsTrait;
+    use LocationsTrait;
     
     /**
      * Display a listing of the resource.
@@ -22,8 +24,9 @@ class LocationsController extends BaseController
      */
     public function index()
     {   
-        $category = Location::all();
-        return $this->sendResponse($category->toArray(), 'Location retrieved successfully.');
+        $locations = $this->retrieveActiveLocationList();
+        
+        return $this->sendResponse($locations, 'Location retrieved successfully.');
     }
 
 
@@ -60,8 +63,19 @@ class LocationsController extends BaseController
         else
             $locations = Location::active()->get();
 
-            return $this->sendResponse($input, 'Location created successfully.');
+            return $this->sendResponse($this->retrieveActiveLocationList(), 'Location created successfully.');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Location $location)
+    {
+        $location->delete();
 
+        return $this->sendResponse($this->retrieveActiveLocationList(), 'Location deleted successfully.');
+    }
 }

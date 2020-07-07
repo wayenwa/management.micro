@@ -35,6 +35,5 @@ Route::group([
 
 Route::middleware('auth:api')->group( function () {
     Route::resource('locations', 'API\LocationsController');
+    Route::resource('communities', 'API\CommunitiesController');
 });
-
-Route::post('request_token', 'AuthController@request_token');

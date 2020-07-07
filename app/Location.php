@@ -6,9 +6,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class Location extends Model
-{
+{   
+    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -25,5 +26,10 @@ class Location extends Model
     {
         return $query->where('status', 1);
     }
+
+    public function communities()
+   {
+       return $this->hasMany('App\Community');
+   }
     
 }
