@@ -23,10 +23,10 @@ class CreateScheduleTimingsTable extends Migration
             $table->boolean('fri')->default(1);
             $table->boolean('sat')->default(1);
             $table->boolean('sun')->default(1);
-            $table->time('from');
-            $table->time('to');
+            $table->string('from');
+            $table->string('to');
             $table->integer('created_by');
-            $table->integer('updated_by');
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

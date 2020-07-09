@@ -26,7 +26,8 @@ class ScheduleTiming extends Model
         'from',
         'to',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'name'
     ];
 
    //  public function scopeActive($query)

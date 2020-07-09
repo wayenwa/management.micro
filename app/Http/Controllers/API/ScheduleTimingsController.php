@@ -39,31 +39,35 @@ class ScheduleTimingsController extends BaseController
     public function store(Request $request)
     {        
         $data = $request->json()->all();
+        $validator = Validator::make($data, [
+            'data' => 'required',
+            'login_token' => 'required',
+        ]);
 
-        // $validator = Validator::make($data, [
-        //     'location' => 'required',
-        //     'permission' => 'required',
-        //     'login_token' => 'required',
-        // ]);
+        $user = $this->getUserByLoginToken($data['login_token']);
 
-        // $user = $this->getUserByLoginToken($data['login_token']);
+        $data = $data['data'];
 
-        // if(!$this->checkPermission($data['permission'])){
-        //     return response()->json(['message' => 'Permission not valid.'], 422);
-        // }
+        $input = array(
+            'name'      =>  $data['schedule_name'],
+            'mon'       =>  $data['days']['mon'],     
+            'tue'       =>  $data['days']['tue'],
+            'wed'       =>  $data['days']['wed'],
+            'thu'       =>  $data['days']['thu'],
+            'fri'       =>  $data['days']['fri'],
+            'sat'       =>  $data['days']['sat'],
+            'sun'       =>  $data['days']['sun'],
+            'from'      =>  $data['from'],
+            'to'        =>  $data['to'],
+            'created_by'=>  $user->id
+        );
 
-        // $input = array(
-        //     'location'      =>  $request->json('municipality'),
-        //     'status'        =>  STATUS_ENABLED,
-        //     'created_by'    =>  $user->id,
-        // );
+        if(!ScheduleTiming::create($input))
+            return response()->json(['message' => 'Failed to save'], 422);
+        else
+            $scheds = ScheduleTiming::orderBy('name', 'asc')->get();
 
-        // if(!Location::create($input))
-        //     return response()->json(['message' => 'Permission not valid.'], 422);
-        // else
-        //     $locations = Location::active()->get();
-
-        //     return $this->sendResponse($this->retrieveActiveLocationList(), 'Location created successfully.');
+            return $this->sendResponse($scheds, 'Schedules created successfully.');
     }
 
     /**
