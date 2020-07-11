@@ -34,8 +34,15 @@ Route::group([
 });
 
 Route::middleware('auth:api')->group( function () {
+    
+    /*  LOCATIONS */
     Route::resource('locations', 'API\LocationsController');
+
+    /*  COMMUNITIES */
     Route::resource('communities', 'API\CommunitiesController');
+
+    /* SCHEDULE TIMINGS */
     Route::resource('schedule_timing', 'API\ScheduleTimingsController');
+    Route::put('update_schedule_timing', 'API\ScheduleTimingsController@update');
 
 });

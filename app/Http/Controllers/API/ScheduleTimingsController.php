@@ -24,8 +24,8 @@ class ScheduleTimingsController extends BaseController
      */
     public function index()
     {   
-        $scheds = ScheduleTiming::all();
-        
+        $scheds = ScheduleTiming::orderBy('name', 'asc')->get();
+
         return $this->sendResponse($scheds, 'Schedules retrieved successfully.');
     }
 
@@ -71,15 +71,54 @@ class ScheduleTimingsController extends BaseController
     }
 
     /**
+     * Update a created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {        
+        $data = $request->json()->all();
+
+        $validator = Validator::make($data, [
+            'data' => 'required',
+            'login_token' => 'required',
+        ]);
+
+        $user = $this->getUserByLoginToken($data['login_token']);
+
+        $data = $data['data'];
+
+        $input = array(
+            'name'      =>  $data['name'],
+            'mon'       =>  $data['mon'],     
+            'tue'       =>  $data['tue'],
+            'wed'       =>  $data['wed'],
+            'thu'       =>  $data['thu'],
+            'fri'       =>  $data['fri'],
+            'sat'       =>  $data['sat'],
+            'sun'       =>  $data['sun'],
+            'from'      =>  $data['from'],
+            'to'        =>  $data['to'],
+            'updated_by'=>  $user->id
+        );
+
+        if(!ScheduleTiming::where('id', $data['id'])->update($input))
+            return response()->json(['message' => 'Failed to update'], 422);
+        else
+            return $this->sendResponse(ScheduleTiming::orderBy('name', 'asc')->get(), 'Schedules created successfully.');
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Location $location)
+    public function destroy(ScheduleTiming $scheduleTiming)
     {
-        $location->delete();
+        $scheduleTiming->delete();
 
-        return $this->sendResponse($this->retrieveActiveLocationList(), 'Location deleted successfully.');
+        return $this->sendResponse(ScheduleTiming::orderBy('name', 'asc')->get(), 'Location deleted successfully.');
     }
 }

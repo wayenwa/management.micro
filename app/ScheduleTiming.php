@@ -30,14 +30,15 @@ class ScheduleTiming extends Model
         'name'
     ];
 
-   //  public function scopeActive($query)
-   //  {
-   //      return $query->where('status', 1);
-   //  }
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_by','updated_by'
+    ];
 
-   //  public function communities()
-   // {
-   //     return $this->hasMany('App\Community');
-   // }
+  
     
 }
