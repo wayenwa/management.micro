@@ -47,4 +47,8 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('schedule_timing', 'API\ScheduleTimingsController');
     Route::put('update_schedule_timing', 'API\ScheduleTimingsController@update');
 
+    /*  MERCHANTS    */
+    Route::resource('merchants', 'API\MerchantsController');
+    Route::get('initial_new_merchant', 'API\InitialMerchantsController@dataReference');
+    
 });
