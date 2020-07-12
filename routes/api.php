@@ -34,12 +34,14 @@ Route::group([
 });
 
 Route::middleware('auth:api')->group( function () {
-    
+
     /*  LOCATIONS */
     Route::resource('locations', 'API\LocationsController');
 
     /*  COMMUNITIES */
     Route::resource('communities', 'API\CommunitiesController');
+    Route::put('update_communities', 'API\CommunitiesController@update');
+    
 
     /* SCHEDULE TIMINGS */
     Route::resource('schedule_timing', 'API\ScheduleTimingsController');

@@ -40,8 +40,7 @@ class CommunitiesController extends BaseController
         $data = $request->json()->all();
 
         $validator = Validator::make($data, [
-            'delivery_price'      => 'required|integer',
-            'name'                => 'required|string',
+            'data'                => 'required',
             'location_id'         => 'required|integer',
             'login_token'         => 'required',
         ]);
@@ -52,8 +51,9 @@ class CommunitiesController extends BaseController
             'location_id'           =>  $data['location_id'],
             'status'                =>  STATUS_ENABLED,
             'created_by'            =>  $user->id,
-            'name'                  =>  $data['name'],
-            'delivery_price'        =>  number_format($data['delivery_price'],2)
+            'name'                  =>  $data['data']['community_name'],
+            'schedule_timing_id'    =>  $data['data']['schedule_timing'],
+            'delivery_price'        =>  number_format($data['data']['community_delivery_price'],2)
         );
 
         if(!Community::create($input))
@@ -64,6 +64,37 @@ class CommunitiesController extends BaseController
             return $this->sendResponse($this->retrieveActiveLocationList(), 'Location created successfully.');
     }
 
+    /**
+     * Update a created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {        
+        $data = $request->json()->all();
+
+        $validator = Validator::make($data, [
+            'data' => 'required',
+            'login_token' => 'required',
+        ]);
+
+        $user = $this->getUserByLoginToken($data['login_token']);
+
+        $data = $data['data'];
+
+        $input = array(
+            'name'              =>  $data['name'],
+            'delivery_price'    =>  $data['delivery_price'],
+            'schedule_timing_id'=>  $data['schedule_timing_id'],
+            'updated_by'        =>  $user->id
+        );
+
+        if(!Community::where('id', $data['id'])->update($input))
+            return response()->json(['message' => 'Failed to update'], 422);
+        else
+            return $this->sendResponse($this->retrieveActiveLocationList(), 'Community updated successfully.');
+    }
 
     
 

@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\DB;
 use App\Location;
 use App\Http\Traits\AuthsTrait;
 use App\Http\Traits\LocationsTrait;
+use App\Http\Traits\ScheduleTimingsTrait;
 
 class LocationsController extends BaseController
 {
     use AuthsTrait;
     use LocationsTrait;
+    use ScheduleTimingsTrait;
     
     /**
      * Display a listing of the resource.
@@ -26,7 +28,11 @@ class LocationsController extends BaseController
     {   
         $locations = $this->retrieveActiveLocationList();
         
-        return $this->sendResponse($locations, 'Location retrieved successfully.');
+        $result = [
+            'data'      =>  $locations,
+            'schedules' =>  $this->scheduleTimingList()
+        ];
+        return $this->sendResponse($result, 'Location retrieved successfully.');
     }
 
 

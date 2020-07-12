@@ -21,7 +21,8 @@ class Community extends Model
         'delivery_price',
         'created_by',
         'updated_by',
-        'status'
+        'status',
+        'schedule_timing_id'
     ];
 
     public function location()

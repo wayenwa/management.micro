@@ -27,6 +27,8 @@ class Location extends Model
         return $query->where('status', 1);
     }
 
+    
+
     public function communities()
    {
        return $this->hasMany('App\Community');
