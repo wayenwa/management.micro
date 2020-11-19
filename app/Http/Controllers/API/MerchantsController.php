@@ -3,55 +3,37 @@
 
 namespace App\Http\Controllers\API;
 
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Http\Traits\AuthsTrait;
-use App\Merchant;
+use App\Services\MerchantService;
 
 class MerchantsController extends BaseController
 {
-
-    use AuthsTrait;
+    /**
+     * @var $merchantService
+     */
+    protected $merchantService;
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * MerchantService constructor
+     * 
+     * @param MerchantService $merchantService
      */
-    public function store(Request $request)
-    {        
+    public function __construct(MerchantService $merchantService)
+    {
+        $this->merchantService = $merchantService;
+    }
+
+    public function store(Request $request, MerchantService $merchantService)
+    {
         $data = $request->json()->all();
 
-        $validator = Validator::make($data, [
-            'name'            => 'required',
-            'address'         => 'required',
-            'contact_no'      => 'required',
-            'login_token'     => 'required',
-            'permission'      => 'required'
-        ]);
-
-        $user = $this->getUserByLoginToken($data['login_token']);
-
-        if(!$this->checkPermission($data['permission'])){
-            return response()->json(['message' => 'Permission not valid.'], 422);
-        }
-
-        $input = array(
-            'name'           =>  $data['name'],
-            'address'        =>  $data['address'],
-            'contact_no'     =>  $data['contact_no'],
-            'created_by'     =>  $user->id,
-            'status'         =>  STATUS_ENABLED
-        );
-
-        if(!Merchant::create($input))
+        try {
+            $result = $this->merchantService->createMerchant($data);
+        } catch (Exception $e){
             return response()->json(['message' => 'Failed to add merchant.'], 422);
-        else
-            return $this->sendResponse([], 'Merchant created successfully.');
+        }
+        return $this->sendResponse($result, 'Merchant created successfully.');
     }
-    
 
 }
