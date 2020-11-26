@@ -71,7 +71,7 @@ class AuthController extends Controller
         UserSession::create([
             'user_id' => $user->id,
             'login_token' => $loginToken,
-            'expiration' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            'expiration' => Carbon::now()->addHours(3)->toDateTimeString(),
             'access_token' => $tokenResult->accessToken,
         ]);
 

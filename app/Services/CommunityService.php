@@ -48,6 +48,10 @@ class CommunityService
 
         $user = $this->getUserByLoginToken($data['login_token']);
 
+        if(!$user){
+            return response()->json(['message' => 'Access expired.'], 401);
+        }
+
         $input = array(
             'location_id'           =>  $data['location_id'],
             'status'                =>  STATUS_ENABLED,
@@ -67,6 +71,10 @@ class CommunityService
         ]);
 
         $user = $this->getUserByLoginToken($data['login_token']);
+        
+        if(!$user || $user->user_type != USER_TYPE_SUPER_ADMIN){
+            return response()->json(['message' => 'Access expired.'], 401);
+        }
 
         $data = $data['data'];
 

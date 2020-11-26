@@ -46,6 +46,10 @@ class ScheduleTimingsController extends BaseController
 
         $user = $this->getUserByLoginToken($data['login_token']);
 
+        if(!$user || $user->user_type != USER_TYPE_SUPER_ADMIN){
+            return response()->json(['message' => 'Access expired.'], 401);
+        }
+
         $data = $data['data'];
 
         $input = array(
@@ -86,6 +90,10 @@ class ScheduleTimingsController extends BaseController
         ]);
 
         $user = $this->getUserByLoginToken($data['login_token']);
+        
+        if(!$user || $user->user_type != USER_TYPE_SUPER_ADMIN){
+            return response()->json(['message' => 'Access expired.'], 401);
+        }
 
         $data = $data['data'];
 

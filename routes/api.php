@@ -48,4 +48,10 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('merchants', 'API\MerchantsController');
     Route::get('initial_new_merchant', 'API\InitialMerchantsController@dataReference');
     
+    /*  CATEGORIES    */
+    Route::post('category', 'API\CategoriesController@category');
+    Route::resource('categories', 'API\CategoriesController');
+    Route::put('update_categories', 'API\CategoriesController@update');
+    
+    
 });

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\MerchantRepository;
+use App\Repositories\CategoryRepository;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Traits\AuthsTrait;
 use InvalidArgumentException;
@@ -17,14 +18,20 @@ class MerchantService
      */
     protected $merchantRepository;
 
+     /**
+     * @var $categoryRepository
+     */
+    protected $categoryRepository;
+
     /**
      * MerchantService constructor
      * 
      * @param MerchantRepository $merchantRepository
      */
-    public function __construct(MerchantRepository $merchantRepository)
+    public function __construct(MerchantRepository $merchantRepository, CategoryRepository $categoryRepository)
     {
         $this->merchantRepository = $merchantRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function createMerchant($data)
@@ -47,6 +54,10 @@ class MerchantService
 
         $user = $this->getUserByLoginToken($data['login_token']);
 
+        if(!$user || $user->user_type != USER_TYPE_SUPER_ADMIN){
+            return response()->json(['message' => 'Access expired.'], 422);
+        }
+        
         $input = array(
             'name'           =>  $data['name'],
             'address'        =>  $data['address'],
@@ -56,5 +67,31 @@ class MerchantService
         );
 
         return $this->merchantRepository->save($input);
+    }
+    public function merchantDetails($adminUrl)
+    {
+
+    }
+
+    public function getMerchantIdByAdminUrl($adminUrl)
+    {
+        return $this->merchantRepository->getIdByAdminUrl($adminUrl);
+    }
+
+    public function getMerchantNameByAdminUrl($adminUrl)
+    {
+        return $this->merchantRepository->getNameByAdminUrl($adminUrl);
+    }
+
+    public function merchantCategories($adminUrl)
+    {
+        $merchantId = $this->merchantRepository->getIdByAdminUrl($adminUrl);
+
+        return $this->merchantRepository->getMerchantCategories($merchantId);
+    }
+
+    public function categoryColumns()
+    {
+        return $this->categoryRepository->columns();
     }
 }

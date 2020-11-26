@@ -54,8 +54,12 @@ class LocationsController extends BaseController
 
         $user = $this->getUserByLoginToken($data['login_token']);
 
+        if(!$user || $user->user_type != USER_TYPE_SUPER_ADMIN){
+            return response()->json(['message' => 'Access expired.'], 401);
+        }
+
         if(!$this->checkPermission($data['permission'])){
-            return response()->json(['message' => 'Permission not valid.'], 422);
+            return response()->json(['message' => 'Permission not valid.'], 401);
         }
 
         $input = array(
@@ -65,7 +69,7 @@ class LocationsController extends BaseController
         );
 
         if(!Location::create($input))
-            return response()->json(['message' => 'Permission not valid.'], 422);
+            return response()->json(['message' => 'Permission not valid.'], 401);
         else
             $locations = Location::active()->get();
 

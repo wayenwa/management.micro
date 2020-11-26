@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
@@ -33,6 +32,19 @@ class MerchantsController extends BaseController
         } catch (Exception $e){
             return response()->json(['message' => 'Failed to add merchant.'], 422);
         }
+        return $this->sendResponse($result, 'Merchant created successfully.');
+    }
+
+    public function show($id)
+    {
+        $result = [
+            'merchant'      =>  $this->merchantService->getMerchantNameByAdminUrl($id),
+            'categories'    =>  [
+                'cols' => $this->merchantService->categoryColumns(),
+                'rows' => $this->merchantService->merchantCategories($id)
+            ]
+        ];
+
         return $this->sendResponse($result, 'Merchant created successfully.');
     }
 
