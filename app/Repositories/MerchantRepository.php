@@ -82,9 +82,9 @@ class MerchantRepository
     /**
      * Get Merchant categories
      */
-    public function getMerchantCategories($merchantId)
-    {
-        $this->category = Category::where('merchant_id', $merchantId)->active()->api()->get();
+    public function getMerchantCategories($merchantId, $hideAdminColumns = false)
+    {   
+        $this->category = ($hideAdminColumns === false) ? Category::where('merchant_id', $merchantId)->active()->tableColumns()->get() : Category::where('merchant_id', $merchantId)->active()->api()->get();
         $this->category = $this->category->toArray();
 
         foreach($this->category as $key => $value){
@@ -95,5 +95,14 @@ class MerchantRepository
         }
 
         return $this->category;
+    }
+
+    /**
+     * PUBLIC URL
+     * TO display active merchants
+     */
+    public function activeList()
+    {
+        return Merchant::select('name', 'address','admin_url')->active()->get();
     }
 }

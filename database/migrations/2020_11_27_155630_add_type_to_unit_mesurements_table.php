@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAdminUrlToMerchantsTable extends Migration
+class AddTypeToUnitMesurementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddAdminUrlToMerchantsTable extends Migration
      */
     public function up()
     {
-        Schema::table('merchants', function (Blueprint $table) {
-            $table->string('admin_url')->after('name')->nullable();
+        Schema::table('unit_measurements', function (Blueprint $table) {
+            $table->string('type')->nullable()->after('unit');
         });
     }
 
@@ -25,8 +25,8 @@ class AddAdminUrlToMerchantsTable extends Migration
      */
     public function down()
     {
-        Schema::table('merchants', function (Blueprint $table) {
-            $table->dropColumn(['admin_url']);
+        Schema::table('unit_measurements', function (Blueprint $table) {
+            $table->dropColumn(['type']);
         });
     }
 }

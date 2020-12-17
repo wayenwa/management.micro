@@ -33,6 +33,10 @@ class MerchantService
         $this->merchantRepository = $merchantRepository;
         $this->categoryRepository = $categoryRepository;
     }
+    public function retrieveActiveMerchantList()
+    {
+        return $this->merchantRepository->activeList();
+    }
 
     public function createMerchant($data)
     {
@@ -68,10 +72,6 @@ class MerchantService
 
         return $this->merchantRepository->save($input);
     }
-    public function merchantDetails($adminUrl)
-    {
-
-    }
 
     public function getMerchantIdByAdminUrl($adminUrl)
     {
@@ -83,15 +83,22 @@ class MerchantService
         return $this->merchantRepository->getNameByAdminUrl($adminUrl);
     }
 
-    public function merchantCategories($adminUrl)
+    public function merchantCategories($adminUrl, $hideAdminColumns = false)
     {
         $merchantId = $this->merchantRepository->getIdByAdminUrl($adminUrl);
 
-        return $this->merchantRepository->getMerchantCategories($merchantId);
+        return $this->merchantRepository->getMerchantCategories($merchantId, $hideAdminColumns);
     }
 
     public function categoryColumns()
     {
         return $this->categoryRepository->columns();
+    }
+
+    public function getShopData($adminUrl)
+    {
+        return $this->merchantRepository->getByAdminUrl($adminUrl);
+
+
     }
 }

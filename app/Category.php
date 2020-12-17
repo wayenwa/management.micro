@@ -28,13 +28,20 @@ class Category extends Model
     }
 
     /**
-     * NOTE:  Used in Ctegory table. Sorting is vital!!!
+     * NOTE:  Used in Category table. Arrangement of columns are vital!!!
      */
-    public function scopeApi($query)
+    public function scopeTableColumns($query)
     {   
         $query->leftJoin('users', 'categories.created_by', '=', 'users.id');
         
         return $query->select('categories.name','users.name as created_by','categories.updated_by','categories.status', 'categories.id');
+    }
+
+    public function scopeApi($query)
+    {   
+        $query->leftJoin('users', 'categories.created_by', '=', 'users.id');
+        
+        return $query->select('categories.name','categories.status', 'categories.id as category_id');
     }
     
 }

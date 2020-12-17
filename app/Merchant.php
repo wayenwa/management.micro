@@ -31,4 +31,9 @@ class Merchant extends Model
     {
         return $query->select('name','address','contact_no');
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', STATUS_ENABLED);
+    }
 }

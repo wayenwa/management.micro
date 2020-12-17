@@ -13,6 +13,18 @@ use Illuminate\Http\Request;
 |
 */
 
+/**
+ * 
+ * PUBLIC ROUTES
+ */
+Route::get('merchants_data/{merchantName}', 'API\InitialMerchantsController@merchants_data');
+Route::get('merchants', 'API\MerchantsController@index');
+
+
+/**
+ * 
+ * AUTHENTICATED ROUTES
+ */
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -53,5 +65,9 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('categories', 'API\CategoriesController');
     Route::put('update_categories', 'API\CategoriesController@update');
     
+     /*  ITEMS    */
+     Route::resource('items', 'API\ItemsController');
     
 });
+
+

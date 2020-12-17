@@ -23,6 +23,13 @@ class MerchantsController extends BaseController
         $this->merchantService = $merchantService;
     }
 
+    public function index()
+    {
+        $merchants = $this->merchantService->retrieveActiveMerchantList();
+        
+        return $this->sendResponse($merchants, 'Merchants retrieved successfully.');
+    }
+
     public function store(Request $request, MerchantService $merchantService)
     {
         $data = $request->json()->all();
