@@ -19,6 +19,7 @@ class Category extends Model
         'merchant_id',
         'status',
         'created_by',
+        'cat_id',
         'updated_by'
     ];
 

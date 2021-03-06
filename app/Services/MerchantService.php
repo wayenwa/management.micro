@@ -33,11 +33,17 @@ class MerchantService
         $this->merchantRepository = $merchantRepository;
         $this->categoryRepository = $categoryRepository;
     }
+
+    public function validateAdminUrl($adminUrl)
+    {
+        return $this->merchantRepository->getIdByAdminUrl($adminUrl);
+    }
+
     public function retrieveActiveMerchantList()
     {
         return $this->merchantRepository->activeList();
     }
-
+    
     public function createMerchant($data)
     {
         $validator = Validator::make($data, [
@@ -83,10 +89,8 @@ class MerchantService
         return $this->merchantRepository->getNameByAdminUrl($adminUrl);
     }
 
-    public function merchantCategories($adminUrl, $hideAdminColumns = false)
+    public function merchantCategories($merchantId, $hideAdminColumns = false)
     {
-        $merchantId = $this->merchantRepository->getIdByAdminUrl($adminUrl);
-
         return $this->merchantRepository->getMerchantCategories($merchantId, $hideAdminColumns);
     }
 
@@ -98,7 +102,26 @@ class MerchantService
     public function getShopData($adminUrl)
     {
         return $this->merchantRepository->getByAdminUrl($adminUrl);
+    }
 
+    public function onSale($merchantId)
+    {           
+        return $this->merchantRepository->getOnsaleList($merchantId);
+    }
 
+    public function popular($merchantId)
+    {           
+        return $this->merchantRepository->getPopular($merchantId);
+    }
+
+    public function initial_product($merchantId, $type)
+    {
+        switch($type){
+            case QUICKLINKS_SALE :
+                return [];
+            default : 
+                return $this->merchantRepository->getPopular($merchantId);
+        }
+        
     }
 }

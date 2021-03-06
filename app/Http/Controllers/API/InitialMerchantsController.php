@@ -9,6 +9,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Services\MerchantService;
 use App\Merchant;
 use App\Location;
+use Illuminate\Support\Facades\Redis;
 
 class InitialMerchantsController extends BaseController
 {
@@ -54,11 +55,35 @@ class InitialMerchantsController extends BaseController
 
     public function merchants_data($merchantName)
     {
+        $merchantId = $this->merchantService->validateAdminUrl($merchantName);
 
-        $result = [
-            'details'       =>  $this->merchantService->getShopData($merchantName),
-            'categories'    =>  $this->merchantService->merchantCategories($merchantName, true)
-        ];
+        if( !$merchantId ){
+            return response()->json(['message' => 'Merchant not found.'], 404);
+        }
+
+        /**
+         * If Redis key exists, show data from redis.
+         * Else, get from Mysql then save to redis.
+         */
+
+        $redis  = Redis::connection();
+        $key    = REDIS_PREFIX_MERCHANT.':'.REDIS_PREFIX_MERCHANT.':'.$merchantName.':'.REDIS_MERCHANT_INDEX;
+        
+        if($redis->exists($key)){
+            $result = json_decode($redis->get($key));
+        }else{
+            $result = [
+                'details'           =>  $this->merchantService->getShopData($merchantName),
+                'categories'        =>  $this->merchantService->merchantCategories($merchantId, true),
+                'merchants'         =>  $this->merchantService->retrieveActiveMerchantList(),
+                'initial_product'   =>  $this->merchantService->initial_product($merchantId, QUICKLINKS_POPULAR)
+            ];
+
+            $redis->set($key, json_encode($result));
+            $redis->expire($key, (env('REDIS_EXPIRY_MINUTES') * 60));
+        }
+
+        
 
         return $this->sendResponse($result, 'Merchants data retrieved successfully.');
     }

@@ -17,7 +17,8 @@
         "laravel/tinker": "^1.0",
         "noh4ck/graphiql": "@dev",
         "nuwave/lighthouse": "^4.15",
-        "rebing/graphql-laravel": "^5.1"
+        "predis/predis": "^1.1",
+        "rebing/graphql-laravel": "^6.1"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\CategoryRepository;
 use App\Repositories\MerchantRepository;
+use App\Repositories\ItemsRepository;
 use App\Repositories\UnitMeasureRepository;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Traits\AuthsTrait;
@@ -25,9 +26,14 @@ class CategoryService
     protected $merchantRepository;
 
      /**
-     * @var $merchantRepository
+     * @var $unitMeasureRepository
      */
     protected $unitMeasureRepository;
+
+     /**
+     * @var $itemsRepository
+     */
+    protected $itemsRepository;
 
     /**
      * CommunityService constructor
@@ -35,12 +41,14 @@ class CategoryService
      * @param CategoryRepository $categoryRepository
      * @param MerchantRepository $merchantsRepository
      * @param UnitMeasureRepository $unitMeasureRepository
+     * @param ItemsRepository $itemsRepository
      */
-    public function __construct(CategoryRepository $categoryRepository, MerchantRepository $merchantRepository, UnitMeasureRepository $unitMeasureRepository)
+    public function __construct(CategoryRepository $categoryRepository, MerchantRepository $merchantRepository, UnitMeasureRepository $unitMeasureRepository, ItemsRepository $itemsRepository)
     {
         $this->categoryRepository       = $categoryRepository;
         $this->merchantRepository       = $merchantRepository;
         $this->unitMeasureRepository    = $unitMeasureRepository;
+        $this->itemsRepository          = $itemsRepository;
     }
 
     public function createCategory($data)
@@ -96,6 +104,7 @@ class CategoryService
             'category'          =>  $category->name,
             'cat_id'            =>  $category->id,
             'unit_measure'      =>  $this->unitMeasureRepository->retrieveAll(),
+            'items'             =>  $this->itemsRepository->categoryItems($category->id)
         ];
 
 

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Merchant;
 use App\Category;
+use App\Item;
 
 class MerchantRepository
 {
@@ -63,6 +64,10 @@ class MerchantRepository
     {
         $this->merchant = Merchant::select('id')->where('admin_url', $adminUrl)->first();
 
+        if(!$this->merchant){
+            return false;
+        }
+
         return $this->merchant->id;
     }
 
@@ -104,5 +109,21 @@ class MerchantRepository
     public function activeList()
     {
         return Merchant::select('name', 'address','admin_url')->active()->get();
+    }
+
+    public function getOnsaleList($merchantId)
+    {
+        $result = Category::select('name','id')->where('merchant_id', $merchantId)->active()->get();
+
+        foreach($result as $key => $category){
+            $result[$key]['items'] = Item::where('cat_id', $category['id'])->onSale()->active()->api()->get();
+        }
+
+        return $result;
+    }
+
+    public function getPopular()
+    {
+        return [];
     }
 }

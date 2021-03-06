@@ -17,9 +17,9 @@ use Illuminate\Http\Request;
  * 
  * PUBLIC ROUTES
  */
-Route::get('merchants_data/{merchantName}', 'API\InitialMerchantsController@merchants_data');
-Route::get('merchants', 'API\MerchantsController@index');
-
+Route::get('merchant_data/{merchantName}', 'API\InitialMerchantsController@merchants_data');
+Route::get('index_merchants', 'API\MerchantsController@index');
+Route::post('category_items', 'API\CategoriesController@category_items');
 
 /**
  * 
@@ -51,7 +51,6 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('communities', 'API\CommunitiesController');
     Route::put('update_communities', 'API\CommunitiesController@update');
     
-
     /* SCHEDULE TIMINGS */
     Route::resource('schedule_timing', 'API\ScheduleTimingsController');
     Route::put('update_schedule_timing', 'API\ScheduleTimingsController@update');
@@ -61,11 +60,13 @@ Route::middleware('auth:api')->group( function () {
     Route::get('initial_new_merchant', 'API\InitialMerchantsController@dataReference');
     
     /*  CATEGORIES    */
-    Route::post('category', 'API\CategoriesController@category');
+    
     Route::resource('categories', 'API\CategoriesController');
+    Route::post('category', 'API\CategoriesController@category');
     Route::put('update_categories', 'API\CategoriesController@update');
     
      /*  ITEMS    */
+     Route::put('items', 'API\ItemsController@update');
      Route::resource('items', 'API\ItemsController');
     
 });
